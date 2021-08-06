@@ -7,8 +7,8 @@ module Repositories
 
             return {
                 'name' => res['name'],
-                'type_slot_a' => res['types'][0]['type']['name'],
-                'type_slot_b' => res['types'][1]['type']['name'],
+                'slot_a' => res['types'][0]['type']['name'],
+                'slot_b' => res['types'][1]['type']['name'],
                 'hp' => res['stats'][0]['base_stat'],
                 'attack' => res['stats'][1]['base_stat'],
                 'special_attack' => res['stats'][3]['base_stat'],
