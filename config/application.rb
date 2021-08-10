@@ -39,3 +39,4 @@ module Pokecounter
     config.generators.system_tests = nil
   end
 end
+
