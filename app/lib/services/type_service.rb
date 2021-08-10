@@ -23,4 +23,3 @@ end
 
 
 # res = Services::TypeService.new.type_repository_response(1)
-
