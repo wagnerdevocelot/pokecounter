@@ -10,25 +10,49 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2021_08_11_220920) do
+=======
+ActiveRecord::Schema.define(version: 2021_08_06_030617) do
+>>>>>>> dd27ccc6537684031a451594a3165f0b4499437b
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+<<<<<<< HEAD
   create_table "pokemons", force: :cascade do |t|
     t.string "name"
     t.bigint "type_a_id"
     t.bigint "type_b_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+=======
+  create_table "moves", force: :cascade do |t|
+    t.string "name"
+    t.string "move_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "pokemons", force: :cascade do |t|
+    t.string "name"
+    t.string "slot_a"
+    t.string "slot_b"
+>>>>>>> dd27ccc6537684031a451594a3165f0b4499437b
     t.integer "hp"
     t.integer "attack"
     t.integer "defense"
     t.integer "special_attack"
     t.integer "special_defense"
     t.integer "speed"
+<<<<<<< HEAD
     t.index ["type_a_id"], name: "index_pokemons_on_type_a_id"
     t.index ["type_b_id"], name: "index_pokemons_on_type_b_id"
+=======
+    t.integer "average_stats"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+>>>>>>> dd27ccc6537684031a451594a3165f0b4499437b
   end
 
   create_table "types", force: :cascade do |t|
