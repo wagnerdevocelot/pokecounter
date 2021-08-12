@@ -1,4 +1,4 @@
-class AddDoubleDamageFromToTypes < ActiveRecord::Migration[6.0]
+class AddDamageRelationToTypes < ActiveRecord::Migration[6.0]
   def change
     add_column :types, :double_damage_from, :string, array: true, default: []
     add_column :types, :double_damage_to, :string, array: true, default: []
