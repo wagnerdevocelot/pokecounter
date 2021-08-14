@@ -9,5 +9,3 @@ class Type < ApplicationRecord
         self.pokemon_a + self.pokemon_b
     end
 end
-
-
