@@ -1,19 +1,16 @@
 class Api::V1::HomeController < ApplicationController
   def index
-    # types = Type.all
-    # # return only the types that have "bug" or "grass" on field double_damage_to
-    # types = types.select { |t| t.double_damage_to.include?("bug") and t.double_damage_to.include?("grass") }
+    pokemons = Services::PokemonService.new.get_all()
 
-    types = Pokemon.all.map {|pokemon| {id: pokemon.id, name: pokemon.name} }
-    render json: types
+    render json: pokemons
   end
 
   def search
     id = params[:id]
 
-    pokemons = Services::TypeService.new.busca(id)
+    pokemon = Services::PokemonService.new.find_counter(id)
 
-    render json: pokemons
+    render json: pokemon
   end
 end
 
