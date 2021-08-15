@@ -8,6 +8,8 @@ module Repositories
 
     def find_by_id(id)
       pokemon = Pokemon.find(id)
+
+      return pokemon
     end
   end
 end
