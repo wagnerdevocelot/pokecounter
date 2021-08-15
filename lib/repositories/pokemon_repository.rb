@@ -3,7 +3,7 @@ module Repositories
     def get_all
       pokemons = Pokemon.all
 
-      return pokemons.map {|pokemon| {id: pokemon.id, name: pokemon.name}}
+      return pokemons
     end
 
     def find_by_id(id)
