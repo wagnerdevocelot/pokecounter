@@ -3,7 +3,7 @@ namespace :types_request do
         Array(1...19).each do |i|
             Services::TypeService.new.type_repository_response(i)
             puts "resquesting type and saving to db"
-            sleep 2
+            sleep 1
         end
     end
 end

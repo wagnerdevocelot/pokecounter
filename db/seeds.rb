@@ -1,27 +1,3 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
-
-# {
-#     "ID": 1,
-#     "Name": "Bulbasaur",
-#     "Form": " ",
-#     "Type1": "Grass",
-#     "Type2": "Poison",
-#     "Total": 318,
-#     "HP": 45,
-#     "Attack": 49,
-#     "Defense": 49,
-#     "Sp. Atk": 65,
-#     "Sp. Def": 65,
-#     "Speed": 45,
-#     "Generation": 1
-#   },
-
 nationaldex = JSON.parse(File.read("lib/seeds/json/nationaldex.json"))
 nationaldex.each do |dex|
     pokemon = Pokemon.new
@@ -37,13 +13,8 @@ nationaldex.each do |dex|
     pokemon.generation = dex["Generation"]
     search_type_a = Type.find_by(name: dex["Type1"].downcase)
     search_type_b = Type.find_by(name: dex["Type2"].downcase)
-    if search_type_b.nil?
-        pokemon.type_a = search_type_a
-        pokemon.type_b = Type.find_by(name: "empty")
-    else
-        pokemon.type_a = search_type_a
-        pokemon.type_b = search_type_b
-    end
+    pokemon.type_a = search_type_a
+    pokemon.type_b = search_type_b
     pokemon.save!
     puts "Seeded #{pokemon.name}!"
 end
