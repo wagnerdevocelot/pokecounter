@@ -8,4 +8,36 @@ class Type < ApplicationRecord
     def same_type_pokemons
         self.pokemon_a + self.pokemon_b
     end
+
+    def physical_sweeper_counter_order_a
+        self.pokemon_a.order(defense: :desc, attack: :desc, hp: :desc, total: :desc)
+    end
+
+    def physical_sweeper_counter_order_b
+        self.pokemon_b.order(defense: :desc, attack: :desc, hp: :desc, total: :desc)
+    end
+
+    def special_sweeper_counter_order_a
+        self.pokemon_a.order(special_defense: :desc, special_attack: :desc, hp: :desc, total: :desc)
+    end
+
+    def special_sweeper_counter_order_b
+        self.pokemon_b.order(special_defense: :desc, special_attack: :desc, hp: :desc, total: :desc)
+    end
+
+    def physical_tank_counter_order_a
+        self.pokemon_a.order(special_attack: :desc, speed: :desc, hp: :desc, total: :desc)
+    end
+
+    def physical_tank_counter_order_b
+        self.pokemon_b.order(special_attack: :desc, speed: :desc, hp: :desc, total: :desc)
+    end
+
+    def special_tank_counter_order_a
+        self.pokemon_a.order(attack: :desc, speed: :desc, hp: :desc, total: :desc)
+    end
+
+    def special_tank_counter_order_b
+        self.pokemon_b.order(attack: :desc, speed: :desc, hp: :desc, total: :desc)
+    end
 end

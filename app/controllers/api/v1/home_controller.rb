@@ -1,16 +1,16 @@
 class Api::V1::HomeController < ApplicationController
-  def index
-    pokemons = Services::PokemonService.new.get_all()
+  def pokedex
+    pokedex = Services::PokemonService.new.get_all()
 
-    render json: pokemons
+    render json: pokedex
   end
 
-  def search
+  def counters
     id = params[:id]
 
-    pokemon = Services::PokemonService.new.find_counter(id)
+    pokemon_counters = Services::PokemonService.new.find_counter(id)
 
-    render json: pokemon
+    render json: pokemon_counters
   end
 end
 

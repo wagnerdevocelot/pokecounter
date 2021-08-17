@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
     namespace :v1 do
-      get 'home/index' => 'home#index'
-      get 'home/search/:id' => 'home#search'
+      get 'home/pokedex' => 'home#pokedex'
+      get 'home/counters/:id' => 'home#counters'
     end
   end
 end
