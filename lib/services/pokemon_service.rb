@@ -33,7 +33,7 @@ module Services
         counters.flatten!
       end
 
-      return counters.first(5)
+      return counters.first(30)
     end
 
     def double_damage_counters(pokemon)
