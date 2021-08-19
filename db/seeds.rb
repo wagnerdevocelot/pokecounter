@@ -21,3 +21,8 @@ end
 
 # rake db:seed
 
+# url = "https://pokeapi.co/api/v2/move/13/"
+
+# def id_from_url_to_int(url)
+#     url.split("/").last.to_i
+# end
