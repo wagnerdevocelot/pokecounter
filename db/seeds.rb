@@ -19,10 +19,15 @@ nationaldex.each do |dex|
     puts "Seeded #{pokemon.name}!"
 end
 
+moves = JSON.parse(File.read("lib/seeds/json/moves.json"))
+moves.each do |move|
+    pokemon_move = PokemonMove.new
+    pokemon_move.name = move["identifier"]
+    pokemon_move.power = move["power"]
+    pokemon_move.damage_class = move["damage_class_id"]
+    pokemon_move.type_id = move["type_id"]
+    pokemon_move.save!
+    puts "Seeded #{pokemon_move.name}!"
+end
+
 # rake db:seed
-
-# url = "https://pokeapi.co/api/v2/move/13/"
-
-# def id_from_url_to_int(url)
-#     url.split("/").last.to_i
-# end
