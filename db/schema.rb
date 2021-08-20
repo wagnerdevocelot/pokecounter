@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_19_223653) do
+ActiveRecord::Schema.define(version: 2021_08_20_003843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 2021_08_19_223653) do
     t.string "form"
     t.integer "total"
     t.integer "generation"
+    t.string "learned_moves", default: [], array: true
     t.index ["type_a_id"], name: "index_pokemons_on_type_a_id"
     t.index ["type_b_id"], name: "index_pokemons_on_type_b_id"
   end
