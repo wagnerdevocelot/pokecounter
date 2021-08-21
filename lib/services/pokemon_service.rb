@@ -8,7 +8,7 @@ module Services
 
     def find_counter(id)
       pokemon = Repositories::PokemonRepository.new.find_by_id(id)
-      pokemon_role = identify_roles(pokemon.id)
+      pokemon_role = identify_role(pokemon.id)
 
       types = double_damage_counters(pokemon)
       types = half_damage_counters(pokemon) if types.empty?
@@ -18,17 +18,15 @@ module Services
 
       types.each do |type|
         if pokemon_role == "Phyiscal Sweeper"
-          counters << type.physical_sweeper_counter_order_a
-          counters << type.physical_sweeper_counter_order_b unless type.pokemon_b.nil?
+          counters << type.physical_sweeper_counter_order
         elsif pokemon_role == "Special Sweeper"
-          counters << type.special_sweeper_counter_order_a
-          counters << type.special_sweeper_counter_order_b unless type.pokemon_b.nil?
+          counters << type.special_sweeper_counter_order
         elsif pokemon_role == "Physical Tank"
-          counters << type.physical_tank_counter_order_a
-          counters << type.physical_tank_counter_order_b unless type.pokemon_b.nil?
+          counters << type.physical_tank_counter_order
+        elsif pokemon_role == "Special Tank"
+          counters << type.special_tank_counter_order
         else
-          counters << type.special_tank_counter_order_a
-          counters << type.special_tank_counter_order_b unless type.pokemon_b.nil?
+          counters << type.general_counter_order
         end
         counters.flatten!
       end
@@ -60,23 +58,23 @@ module Services
       end
     end
 
-    def identify_roles(id)
+    def identify_role(id)
       pokemon = Repositories::PokemonRepository.new.find_by_id(id)
       stats = [pokemon.hp, pokemon.attack , pokemon.special_attack, pokemon.defense, pokemon.special_defense,  pokemon.speed ].max(2)
 
-      case stats
-      when stats.include?(pokemon.attack) && stats.include?(pokemon.speed)
+      if stats.include?(pokemon.attack) && stats.include?(pokemon.speed)
         return "Physical Sweeper"
-      when stats.include?(pokemon.special_attack) && stats.include?(pokemon.speed)
+      elsif stats.include?(pokemon.special_attack) && stats.include?(pokemon.speed)
         return "Special Sweeper"
-      when stats.include?(pokemon.attack) && stats.include?(pokemon.defense)
+      elsif stats.include?(pokemon.attack) && stats.include?(pokemon.defense)
         return "Physical Tank"
-      when stats.include?(pokemon.special_attack) && stats.include?(pokemon.defense)
+      elsif stats.include?(pokemon.special_attack) && stats.include?(pokemon.defense)
         return "Special Tank"
+      else
+        return "General"
       end
     end
 
   end
 end
-
 

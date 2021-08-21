@@ -10,35 +10,24 @@ class Type < ApplicationRecord
         self.pokemon_a + self.pokemon_b
     end
 
-    def physical_sweeper_counter_order_a
-        self.pokemon_a.order(defense: :desc, attack: :desc, hp: :desc, total: :desc)
+    def physical_sweeper_counter_order
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.defense, pokemon.hp ] }.reverse
     end
 
-    def physical_sweeper_counter_order_b
-        self.pokemon_b.order(defense: :desc, attack: :desc, hp: :desc, total: :desc)
+    def special_sweeper_counter_order
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.special_defense, pokemon.hp ] }.reverse
     end
 
-    def special_sweeper_counter_order_a
-        self.pokemon_a.order(special_defense: :desc, special_attack: :desc, hp: :desc, total: :desc)
+    def physical_tank_counter_order
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.special_attack, pokemon.speed ] }.reverse
     end
 
-    def special_sweeper_counter_order_b
-        self.pokemon_b.order(special_defense: :desc, special_attack: :desc, hp: :desc, total: :desc)
+    def special_tank_counter_order
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.attack, pokemon.speed ] }.reverse
     end
 
-    def physical_tank_counter_order_a
-        self.pokemon_a.order(special_attack: :desc, speed: :desc, hp: :desc, total: :desc)
+    def general_counter_order
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.total ] }.reverse
     end
 
-    def physical_tank_counter_order_b
-        self.pokemon_b.order(special_attack: :desc, speed: :desc, hp: :desc, total: :desc)
-    end
-
-    def special_tank_counter_order_a
-        self.pokemon_a.order(attack: :desc, speed: :desc, hp: :desc, total: :desc)
-    end
-
-    def special_tank_counter_order_b
-        self.pokemon_b.order(attack: :desc, speed: :desc, hp: :desc, total: :desc)
-    end
 end
