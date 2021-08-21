@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_13_013400) do
+ActiveRecord::Schema.define(version: 2021_08_20_003843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "pokemon_moves", force: :cascade do |t|
+    t.string "name"
+    t.string "damage_class"
+    t.integer "power"
+    t.bigint "type_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["type_id"], name: "index_pokemon_moves_on_type_id"
+  end
 
   create_table "pokemons", force: :cascade do |t|
     t.string "name"
@@ -30,6 +40,7 @@ ActiveRecord::Schema.define(version: 2021_08_13_013400) do
     t.string "form"
     t.integer "total"
     t.integer "generation"
+    t.string "learned_moves", default: [], array: true
     t.index ["type_a_id"], name: "index_pokemons_on_type_a_id"
     t.index ["type_b_id"], name: "index_pokemons_on_type_b_id"
   end
@@ -46,4 +57,5 @@ ActiveRecord::Schema.define(version: 2021_08_13_013400) do
     t.string "no_damage_to", default: [], array: true
   end
 
+  add_foreign_key "pokemon_moves", "types"
 end
