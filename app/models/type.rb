@@ -11,19 +11,19 @@ class Type < ApplicationRecord
     end
 
     def physical_sweeper_counter_order
-        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.defense, pokemon.hp ] }.reverse
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.defense, pokemon.hp, pokemon.total ] }.reverse
     end
 
     def special_sweeper_counter_order
-        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.special_defense, pokemon.hp ] }.reverse
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.special_defense, pokemon.hp, pokemon.total ] }.reverse
     end
 
     def physical_tank_counter_order
-        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.special_attack, pokemon.speed ] }.reverse
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.special_attack, pokemon.speed, pokemon.total ] }.reverse
     end
 
     def special_tank_counter_order
-        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.attack, pokemon.speed ] }.reverse
+        self.same_type_pokemons.sort_by { |pokemon| [ pokemon.attack, pokemon.speed, pokemon.total ] }.reverse
     end
 
     def general_counter_order
