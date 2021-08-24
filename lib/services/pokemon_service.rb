@@ -14,22 +14,12 @@ module Services
       types = half_damage_counters(pokemon) if types.empty?
       types = no_damage_counters(pokemon) if types.empty?
 
-      counters = []
+      counters = counter_sort(*types, :defense, :hp, :special_defense) if pokemon_role == "Phyiscal Sweeper"
+      counters = counter_sort(*types, :special_defense, :hp, :defense) if pokemon_role == "Special Sweeper"
+      counters = counter_sort(*types, :attack, :speed, :hp) if pokemon_role == "Special Tank"
+      counters = counter_sort(*types, :special_attack, :speed, :hp) if pokemon_role == "Physical Tank"
+      counters = counter_sort(*types, :attack, :special_attack, :speed) if pokemon_role == "General"
 
-      types.each do |type|
-        if pokemon_role == "Phyiscal Sweeper"
-          counters << type.physical_sweeper_counter_order
-        elsif pokemon_role == "Special Sweeper"
-          counters << type.special_sweeper_counter_order
-        elsif pokemon_role == "Physical Tank"
-          counters << type.physical_tank_counter_order
-        elsif pokemon_role == "Special Tank"
-          counters << type.special_tank_counter_order
-        else
-          counters << type.general_counter_order
-        end
-        counters.flatten!
-      end
 
       return counters.first(30)
     end
@@ -73,6 +63,16 @@ module Services
       else
         return "General"
       end
+    end
+
+    def counter_sort(*types, sortA, sortB, sortC)
+      counters = []
+      types.each do |type|
+         counters << type.pokemon_a.order(sortA, sortB, sortC)
+         counters << type.pokemon_b.order(sortA, sortB, sortC) unless type.pokemon_b.nil?
+      end
+      counters.flatten!
+      counters.sort_by { |pokemon| pokemon.total }.reverse
     end
 
   end

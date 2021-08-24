@@ -239,7 +239,8 @@ DEPENDENCIES
   rspec-rails (~> 5.0)
   sass-rails (>= 6)
   shoulda-matchers (~> 5.0)
-  simplecov (~> 0.21.2)
+  simplecov
+  simplecov_json_formatter
   spring
   spring-watcher-listen (~> 2.0.0)
   turbolinks (~> 5)
