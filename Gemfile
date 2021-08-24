@@ -48,7 +48,8 @@ end
 
 group :test do
   gem "database_cleaner-active_record", "~> 2.0"
-  gem "simplecov", "~> 0.21.2", require: false
+  gem "simplecov", require: false
+  gem "simplecov_json_formatter"
   gem "shoulda-matchers", "~> 5.0"
 end
 
