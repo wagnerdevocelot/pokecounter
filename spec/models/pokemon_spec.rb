@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Pokemon, type: :model do
@@ -13,5 +15,7 @@ RSpec.describe Pokemon, type: :model do
     it { should validate_presence_of(:special_defense) }
     it { should validate_presence_of(:speed) }
     it { should validate_presence_of(:generation) }
+    it { should belong_to(:type_a) }
+    it { is_expected.to be_valid }
   end
 end

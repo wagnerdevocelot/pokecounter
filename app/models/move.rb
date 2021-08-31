@@ -1,2 +1,0 @@
-class Move < ApplicationRecord
-end
