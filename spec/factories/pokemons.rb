@@ -3,7 +3,8 @@
 FactoryBot.define do
   factory :pokemon do
     name { 'MyString' }
-    type_a { build(:type) }
+    type_a { Type.create(name: 'MyString') }
+    type_b { build(:type) }
     hp { 1 }
     attack { 1 }
     defense { 1 }
