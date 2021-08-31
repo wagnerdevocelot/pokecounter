@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddDamageRelationToTypes < ActiveRecord::Migration[6.0]
   def change
     add_column :types, :double_damage_from, :string, array: true, default: []

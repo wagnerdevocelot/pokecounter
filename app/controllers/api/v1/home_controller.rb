@@ -1,17 +1,21 @@
-class Api::V1::HomeController < ApplicationController
-  def pokedex
-    pokedex = Services::PokemonService.new.get_all()
+# frozen_string_literal: true
 
-    render json: pokedex
-  end
+module Api
+  module V1
+    class HomeController < ApplicationController
+      def pokedex
+        pokedex = Services::PokemonService.new.get_all
 
-  def counters
-    id = params[:id]
+        render json: pokedex
+      end
 
-    pokemon_counters = Services::PokemonService.new.find_counter(id)
+      def counters
+        id = params[:id]
 
-    render json: pokemon_counters
+        pokemon_counters = Services::PokemonService.new.find_counter(id)
+
+        render json: pokemon_counters
+      end
+    end
   end
 end
-
-
