@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Services
+  # PokemonService faz a requisição de dados do serviço Pokemon
   class PokemonService
-    def get_all
+    def self.get_all
       Repositories::PokemonRepository.new.get_all
     end
 
@@ -10,15 +11,27 @@ module Services
       pokemon = Repositories::PokemonRepository.new.find_by_id(id)
       pokemon_role = identify_role(pokemon.id)
 
-      types = double_damage_counters(pokemon)
-      types = half_damage_counters(pokemon) if types.empty?
-      types = no_damage_counters(pokemon) if types.empty?
+      types = case types
+              when types.empty?
+                double_damage_counters(pokemon)
+              when types.empty?
+                half_damage_counters(pokemon)
+              else
+                no_damage_counters(pokemon)
+              end
 
-      counters = counter_sort(*types, :defense, :hp, :special_defense) if pokemon_role == 'Phyiscal Sweeper'
-      counters = counter_sort(*types, :special_defense, :hp, :defense) if pokemon_role == 'Special Sweeper'
-      counters = counter_sort(*types, :attack, :speed, :hp) if pokemon_role == 'Special Tank'
-      counters = counter_sort(*types, :special_attack, :speed, :hp) if pokemon_role == 'Physical Tank'
-      counters = counter_sort(*types, :attack, :special_attack, :speed) if pokemon_role == 'General'
+      counters = case pokemon_role
+                 when 'Physical Sweeper'
+                   counter_sort(*types, :defense, :hp, :special_defense)
+                 when 'Special Sweeper'
+                   counter_sort(*types, :special_defense, :hp, :defense)
+                 when 'Physical Tank'
+                   counter_sort(*types, :attack, :speed, :hp)
+                 when 'Special Tank'
+                   counter_sort(*types, :special_attack, :speed, :hp)
+                 else
+                   counter_sort(*types, :attack, :special_attack, :speed)
+                 end
 
       counters.first(30)
     end

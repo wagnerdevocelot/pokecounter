@@ -4,7 +4,7 @@ module Api
   module V1
     class HomeController < ApplicationController
       def pokedex
-        pokedex = Services::PokemonService.new.get_all
+        pokedex = Services::PokemonService.get_all
 
         render json: pokedex
       end
