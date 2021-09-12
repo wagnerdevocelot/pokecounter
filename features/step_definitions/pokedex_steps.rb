@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given('A Pokedex endpoint') do
   # pokedex endpoint
   @pokedex_path = 'http://localhost:3000/api/v1/home/pokedex'

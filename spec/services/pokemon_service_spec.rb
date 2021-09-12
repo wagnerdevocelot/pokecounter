@@ -16,7 +16,7 @@ RSpec.describe Services::PokemonService do
 
   describe '#get_all' do
     it 'returns all pokemons' do
-      expect(service.get_all.count).to eq(1045)
+      expect(Services::PokemonService.get_all.count).to eq(1045)
     end
   end
 end

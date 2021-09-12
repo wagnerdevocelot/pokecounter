@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 module Repositories
-  class PokemonRepository < Pokemon
+  # O PokemonRepository é responsável por fazer a ligação entre a aplicação e a tabela Pokemon.
+  class PokemonRepository
+    def initialize
+      @connection = PG.connect(dbname: 'pokecounter_development')
+    end
+
     def get_all
-      Pokemon.all
+      @connection.exec('SELECT * FROM pokemons')
     end
 
     def find_by_id(id)
-      Pokemon.find(id)
+      @connection.exec("SELECT * FROM pokemons WHERE id = #{id}").first
     end
   end
 end
