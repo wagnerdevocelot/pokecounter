@@ -10,59 +10,29 @@ module Services
     def find_counter(id)
       pokemon = Repositories::PokemonRepository.new.find_by_id(id)
       pokemon_role = identify_role(pokemon.id)
-
-      types = case types
-              when types.empty?
-                double_damage_counters(pokemon)
-              when types.empty?
-                half_damage_counters(pokemon)
-              else
-                no_damage_counters(pokemon)
-              end
-
-      counters = case pokemon_role
-                 when 'Physical Sweeper'
-                   counter_sort(*types, :defense, :hp, :special_defense)
-                 when 'Special Sweeper'
-                   counter_sort(*types, :special_defense, :hp, :defense)
-                 when 'Physical Tank'
-                   counter_sort(*types, :attack, :speed, :hp)
-                 when 'Special Tank'
-                   counter_sort(*types, :special_attack, :speed, :hp)
-                 else
-                   counter_sort(*types, :attack, :special_attack, :speed)
-                 end
-
+      types = type_counters(pokemon.type_a.name, pokemon.type_b.name)
+      counters = role_selector(pokemon_role, types)
       counters.first(30)
     end
 
-    def double_damage_counters(pokemon)
-      if pokemon.type_b.nil?
-        Type.select { |t| t.double_damage_to.include?(pokemon.type_a.name) }
+    def role_selector(pokemon_role, types)
+      case pokemon_role
+      when 'Physical Sweeper'
+        counter_sort(*types, :defense, :hp, :special_defense)
+      when 'Special Sweeper'
+        counter_sort(*types, :special_defense, :hp, :defense)
+      when 'Physical Tank'
+        counter_sort(*types, :attack, :speed, :hp)
+      when 'Special Tank'
+        counter_sort(*types, :special_attack, :speed, :hp)
       else
-        Type.select do |t|
-          t.double_damage_to.include?(pokemon.type_a.name) or t.double_damage_to.include?(pokemon.type_b.name)
-        end
+        counter_sort(*types, :attack, :special_attack, :speed)
       end
     end
 
-    def half_damage_counters(pokemon)
-      if pokemon.type_b.nil?
-        Type.select { |t| t.half_damage_from.include?(pokemon.type_a.name) }
-      else
-        Type.select do |t|
-          t.half_damage_from.include?(pokemon.type_a.name) or t.half_damage_from.include?(pokemon.type_b.name)
-        end
-      end
-    end
-
-    def no_damage_counters(pokemon)
-      if pokemon.type_b.nil?
-        Type.select { |t| t.no_damage_from.include?(pokemon.type_a.name) }
-      else
-        Type.select do |t|
-          t.no_damage_from.include?(pokemon.type_a.name) or t.no_damage_from.include?(pokemon.type_b.name)
-        end
+    def type_counters(type_a, type_b)
+      Type.select do |type|
+        (type.double_damage_to + type.half_damage_to + type.no_damage_to & [type_a, type_b]).any?
       end
     end
 
