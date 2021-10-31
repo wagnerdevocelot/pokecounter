@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 module Services
-  # PokemonService faz a requisição de dados do serviço Pokemon
+  # PokemonService faz a requisicao de dados do servico Pokemon
   class PokemonService
-    def self.get_all
-      Repositories::PokemonRepository.new.get_all
-    end
-
     def find_counter(id)
       pokemon = Repositories::PokemonRepository.new.find_by_id(id)
       pokemon_role = identify_role(pokemon.id)
       types = type_counters(pokemon.type_a.name, pokemon.type_b.name)
       counters = role_selector(pokemon_role, types)
-      counters.first(30)
+      counters.reject! { |counter| counter[:total] < pokemon.total }
+    end
+
+    def non_legendary_counter(id)
+      counters = find_counter(id)
+      counters.reject! { |counter| counter[:total] > 700 }
     end
 
     def role_selector(pokemon_role, types)
@@ -54,11 +55,11 @@ module Services
       end
     end
 
-    def counter_sort(*types, sortA, sortB, sortC)
+    def counter_sort(*types, sort_a, sort_b, sort_c)
       counters = []
       types.each do |type|
-        counters << type.pokemon_a.order(sortA, sortB, sortC)
-        counters << type.pokemon_b.order(sortA, sortB, sortC) unless type.pokemon_b.nil?
+        counters << type.pokemon_a.order(sort_a, sort_b, sort_c)
+        counters << type.pokemon_b.order(sort_a, sort_b, sort_c) unless type.pokemon_b.nil?
       end
       counters.flatten!
       counters.sort_by(&:total).reverse

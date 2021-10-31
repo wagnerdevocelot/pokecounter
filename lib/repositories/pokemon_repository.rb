@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Repositories
-  # O PokemonRepository é responsável por fazer a ligação entre a aplicação e a tabela Pokemon.
+  # O PokemonRepository e responsavel por fazer a ligacao entre a aplicacao e a tabela Pokemon.
   class PokemonRepository
-    def get_all
+    def all_pokemon
       Pokemon.all
     end
 

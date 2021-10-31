@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get 'home/pokedex' => 'home#pokedex'
-      get 'home/counters/:id' => 'home#counters'
+      get 'home/counters/:id(/:legendary)' => 'home#counters'
     end
   end
 end
