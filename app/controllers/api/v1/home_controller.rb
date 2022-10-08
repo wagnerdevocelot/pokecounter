@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    # HomeController responde recebe e responde requisicoes do cliente
+    # HomeController responde recebe e responde requisicoes do cliente ok
     class HomeController < ApplicationController
       def pokedex
         pokedex = Repositories::PokemonRepository.new.all_pokemon
