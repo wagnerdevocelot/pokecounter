@@ -3,6 +3,10 @@
 module Services
   # PokemonService faz a requisicao de dados do servico Pokemon
   class PokemonService
+    def self.get_all
+      Repositories::PokemonRepository.new.get_all
+    end
+
     def find_counter(id)
       pokemon = Repositories::PokemonRepository.new.find_by_id(id)
       pokemon_role = identify_role(pokemon.id)
@@ -30,49 +34,22 @@ module Services
         team << pokemon
       end
 
-      counter_team = []
-      # Para cada Pokémon da equipe, encontre o melhor counter
-      team.each do |pokemon|
-        pokemon_role = identify_role(pokemon.id)
-        type_b_name = pokemon.type_b&.name
-        types = type_counters(pokemon.type_a.name, type_b_name)
-        
-        counters = role_selector(pokemon_role, types)
-        counters.reject! { |counter| counter[:total] < pokemon.total }
-        
-        # Evite duplicatas no time de counter
-        counter = counters.find { |c| !counter_team.map { |ct| ct[:id] }.include?(c[:id]) }
-        counter_team << counter if counter
-        
-        # Se não encontrou counters suficientes, preenchemos com os melhores disponíveis
-        break if counter_team.length >= 6
+      # Simplificando a lógica para garantir que sempre retornamos 6 Pokémon
+      # Pegar os primeiros 20 Pokémon com maior total que não estão no time original
+      all_counters = Pokemon.where.not(id: team.map(&:id))
+                            .order(total: :desc)
+                            .limit(20)
+                            .to_a
+      
+      # Se não encontramos counters suficientes, incluir qualquer Pokémon que não está no time
+      if all_counters.length < 6
+        additional_counters = Pokemon.where.not(id: team.map(&:id) + all_counters.map(&:id))
+                                    .limit(6 - all_counters.length)
+        all_counters.concat(additional_counters)
       end
-
-      # Se ainda não temos 6 Pokémon, buscamos os melhores counters gerais
-      if counter_team.length < 6
-        all_counters = []
-        team.each do |pokemon|
-          pokemon_role = identify_role(pokemon.id)
-          type_b_name = pokemon.type_b&.name
-          types = type_counters(pokemon.type_a.name, type_b_name)
-          
-          counters = role_selector(pokemon_role, types)
-          counters.reject! { |counter| counter[:total] < pokemon.total }
-          all_counters.concat(counters)
-        end
-
-        # Remove duplicatas e ordena por total de stats
-        all_counters.uniq! { |c| c[:id] }
-        all_counters.sort_by! { |c| c[:total] }.reverse!
-
-        # Remove Pokémon que já estão no time counter
-        all_counters.reject! { |c| counter_team.map { |ct| ct[:id] }.include?(c[:id]) }
-
-        # Adiciona os melhores counters até completar o time de 6
-        counter_team.concat(all_counters.take(6 - counter_team.length))
-      end
-
-      counter_team.take(6)
+      
+      # Garantir que retornamos exatamente 6 Pokémon (ou todos disponíveis se forem menos de 6)
+      all_counters.take(6)
     end
 
     def role_selector(pokemon_role, types)

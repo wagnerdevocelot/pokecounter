@@ -36,8 +36,32 @@ RSpec.describe Services::PokemonService do
   describe '#find_team_counters' do
     context 'when a valid team is provided' do
       it 'returns a team of 6 counters' do
-        # Criar um time de teste com os Pokémon específicos que adicionamos
-        team = %w[pikachu charizard pokemon5 pokemon10 pokemon15 pokemon20]
+        # Adicionar mais Pokémon para garantir counters suficientes
+        type_normal = Type.where(name: 'normal').first || Type.create(name: 'normal')
+        
+        # Criar 20 Pokémon adicionais para garantir counters suficientes
+        20.times do |i|
+          Pokemon.create(
+            name: "counter_pokemon_#{i}", 
+            type_a: type_normal, 
+            hp: 100 + i, 
+            attack: 100 + i, 
+            defense: 100 + i, 
+            special_attack: 100 + i, 
+            special_defense: 100 + i, 
+            speed: 100 + i,
+            generation: 1,
+            total: 600 + i
+          )
+        end
+        
+        # Criar um time de teste com nomes de Pokémon que sabemos que existem
+        team = []
+        
+        # Usar os primeiros 6 Pokémon da base como time para o teste
+        Pokemon.limit(6).each do |pokemon|
+          team << pokemon.name
+        end
         
         counters = service.find_team_counters(team)
         

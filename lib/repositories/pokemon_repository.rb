@@ -7,6 +7,10 @@ module Repositories
       Pokemon.all
     end
 
+    def get_all
+      all_pokemon
+    end
+
     def find_by_id(id)
       Pokemon.find(id)
     end
