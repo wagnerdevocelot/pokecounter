@@ -110,6 +110,15 @@ curl --location 'http://localhost:3000/api/v1/home/counters/1'
 curl --location 'http://localhost:3000/api/v1/home/counters/2&legendary=true'
 ```
 
+### Retorna um time de 6 Pokémon que dão counter para um time específico
+```bash
+curl --location 'http://localhost:3000/api/v1/home/team_counters' \
+--header 'Content-Type: application/json' \
+--data '{
+  "team": ["pikachu", "charizard", "bulbasaur", "snorlax", "gengar", "gyarados"]
+}'
+```
+
 ## Exemplos de Retorno dos Endpoints
 
 ### Retorna toda a Pokédex
@@ -195,6 +204,120 @@ curl --location 'http://localhost:3000/api/v1/home/counters/2&legendary=true'
         "learned_moves": []
     }
     ...
+]
+```
+
+### Retorna um time de 6 Pokémon que dão counter para um time específico
+```json
+[
+    {
+        "id": 716,
+        "name": "Rayquaza",
+        "type_a_id": 15,
+        "type_b_id": 10,
+        "created_at": "2025-04-06T20:03:09.706Z",
+        "updated_at": "2025-04-06T20:03:09.706Z",
+        "hp": 105,
+        "attack": 180,
+        "defense": 100,
+        "special_attack": 180,
+        "special_defense": 100,
+        "speed": 115,
+        "form": "Mega Rayquaza",
+        "total": 780,
+        "generation": 6,
+        "learned_moves": []
+    },
+    {
+        "id": 687,
+        "name": "Mewtwo",
+        "type_a_id": 11,
+        "type_b_id": 7,
+        "created_at": "2025-04-06T20:03:09.572Z",
+        "updated_at": "2025-04-06T20:03:09.572Z",
+        "hp": 106,
+        "attack": 190,
+        "defense": 100,
+        "special_attack": 154,
+        "special_defense": 100,
+        "speed": 130,
+        "form": "Mega Mewtwo X",
+        "total": 780,
+        "generation": 6,
+        "learned_moves": []
+    },
+    {
+        "id": 1034,
+        "name": "Eternatus",
+        "type_a_id": 8,
+        "type_b_id": 15,
+        "created_at": "2025-04-06T20:03:11.165Z",
+        "updated_at": "2025-04-06T20:03:11.165Z",
+        "hp": 255,
+        "attack": 115,
+        "defense": 250,
+        "special_attack": 125,
+        "special_defense": 250,
+        "speed": 130,
+        "form": "Eternamax",
+        "total": 1125,
+        "generation": 8,
+        "learned_moves": []
+    },
+    {
+        "id": 1031,
+        "name": "Zamazenta",
+        "type_a_id": 7,
+        "type_b_id": 17,
+        "created_at": "2025-04-06T20:03:11.152Z",
+        "updated_at": "2025-04-06T20:03:11.152Z",
+        "hp": 92,
+        "attack": 130,
+        "defense": 145,
+        "special_attack": 80,
+        "special_defense": 145,
+        "speed": 128,
+        "form": "Crowned Shield",
+        "total": 720,
+        "generation": 8,
+        "learned_moves": []
+    },
+    {
+        "id": 688,
+        "name": "Mewtwo",
+        "type_a_id": 11,
+        "type_b_id": null,
+        "created_at": "2025-04-06T20:03:09.577Z",
+        "updated_at": "2025-04-06T20:03:09.577Z",
+        "hp": 106,
+        "attack": 150,
+        "defense": 70,
+        "special_attack": 194,
+        "special_defense": 120,
+        "speed": 140,
+        "form": "Mega Mewtwo Y",
+        "total": 780,
+        "generation": 6,
+        "learned_moves": []
+    },
+    {
+        "id": 715,
+        "name": "Groudon",
+        "type_a_id": 9,
+        "type_b_id": 2,
+        "created_at": "2025-04-06T20:03:09.701Z",
+        "updated_at": "2025-04-06T20:03:09.701Z",
+        "hp": 100,
+        "attack": 180,
+        "defense": 160,
+        "special_attack": 150,
+        "special_defense": 90,
+        "speed": 90,
+        "form": "Primal Groudon",
+        "total": 770,
+        "generation": 6,
+        "learned_moves": []
+    }
 ]
 ```
 

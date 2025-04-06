@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'home/pokedex' => 'home#pokedex'
       get 'home/counters/:id(/:legendary)' => 'home#counters'
+      post 'home/team_counters' => 'home#team_counters'
     end
   end
 end

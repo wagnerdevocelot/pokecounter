@@ -10,5 +10,9 @@ module Repositories
     def find_by_id(id)
       Pokemon.find(id)
     end
+
+    def find_by_name(name)
+      Pokemon.where('lower(name) = ?', name.downcase).first
+    end
   end
 end

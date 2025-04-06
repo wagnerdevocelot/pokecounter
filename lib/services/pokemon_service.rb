@@ -20,6 +20,61 @@ module Services
       counters.reject! { |counter| counter[:total] > 700 }
     end
 
+    def find_team_counters(team_names)
+      raise 'Um time completo precisa ter 6 Pokémon' if team_names.length != 6
+
+      team = []
+      team_names.each do |name|
+        pokemon = Repositories::PokemonRepository.new.find_by_name(name)
+        raise "Pokémon não encontrado: #{name}" if pokemon.nil?
+        team << pokemon
+      end
+
+      counter_team = []
+      # Para cada Pokémon da equipe, encontre o melhor counter
+      team.each do |pokemon|
+        pokemon_role = identify_role(pokemon.id)
+        type_b_name = pokemon.type_b&.name
+        types = type_counters(pokemon.type_a.name, type_b_name)
+        
+        counters = role_selector(pokemon_role, types)
+        counters.reject! { |counter| counter[:total] < pokemon.total }
+        
+        # Evite duplicatas no time de counter
+        counter = counters.find { |c| !counter_team.map { |ct| ct[:id] }.include?(c[:id]) }
+        counter_team << counter if counter
+        
+        # Se não encontrou counters suficientes, preenchemos com os melhores disponíveis
+        break if counter_team.length >= 6
+      end
+
+      # Se ainda não temos 6 Pokémon, buscamos os melhores counters gerais
+      if counter_team.length < 6
+        all_counters = []
+        team.each do |pokemon|
+          pokemon_role = identify_role(pokemon.id)
+          type_b_name = pokemon.type_b&.name
+          types = type_counters(pokemon.type_a.name, type_b_name)
+          
+          counters = role_selector(pokemon_role, types)
+          counters.reject! { |counter| counter[:total] < pokemon.total }
+          all_counters.concat(counters)
+        end
+
+        # Remove duplicatas e ordena por total de stats
+        all_counters.uniq! { |c| c[:id] }
+        all_counters.sort_by! { |c| c[:total] }.reverse!
+
+        # Remove Pokémon que já estão no time counter
+        all_counters.reject! { |c| counter_team.map { |ct| ct[:id] }.include?(c[:id]) }
+
+        # Adiciona os melhores counters até completar o time de 6
+        counter_team.concat(all_counters.take(6 - counter_team.length))
+      end
+
+      counter_team.take(6)
+    end
+
     def role_selector(pokemon_role, types)
       case pokemon_role
       when 'Physical Sweeper'
