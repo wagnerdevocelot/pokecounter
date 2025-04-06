@@ -5,11 +5,11 @@ PokéCounter é uma aplicação desenvolvida para gerenciar e consultar informa�
 ## Requisitos
 
 - **Ruby versão:** 2.7.2 ou superior
-- **Rails versão:** 6.1.4 ou superior
+- **Rails versão:** 6.0.4 ou superior
 - **Dependências do sistema:**
   - PostgreSQL
   - Node.js
-  - Yarn
+  - npm
 
 ## Configuração
 
@@ -21,8 +21,11 @@ PokéCounter é uma aplicação desenvolvida para gerenciar e consultar informa�
 
 2. Instale as dependências:
    ```bash
+   # Instale as dependências Ruby
    bundle install
-   yarn install
+
+   # Instale as dependências JavaScript com npm
+   npm install
    ```
 
 3. Configure o banco de dados:
@@ -37,6 +40,23 @@ PokéCounter é uma aplicação desenvolvida para gerenciar e consultar informa�
    - Popule o banco com os dados iniciais:
      ```bash
      rails db:seed
+     ```
+
+   Se precisar reiniciar o banco de dados:
+   ```bash
+   rails db:drop
+   rails db:create
+   rails db:migrate
+   rails db:seed
+   ```
+
+4. Desabilite a verificação de integridade do Yarn:
+   - Se você encontrar erros relacionados ao Yarn, edite o arquivo `config/webpacker.yml` e altere:
+     ```yaml
+     development:
+       <<: *default
+       compile: true
+       check_yarn_integrity: false
      ```
 
 ## Inicialização
@@ -72,6 +92,111 @@ rspec
 - **Criação de Times Otimizados**: Envia um time e recebe como resposta um time que countera as fraquezas e fortalezas do time oponente, com foco em batalhas competitivas.
 - **Suporte a Múltiplos Papéis**: Define papéis como "Physical Sweeper" ou "Special Tank" para Pokémon.
 - **Suporte a Múltiplos Idiomas**: Inclui traduções para nomes e descrições de Pokémon e movimentos.
+
+## Exemplos de uso dos endpoints
+
+### Retorna toda a Pokédex
+```bash
+curl --location 'http://localhost:3000/api/v1/home/pokedex'
+```
+
+### Retorna todos os Pokémon que dão counter no Pokémon do ID especificado
+```bash
+curl --location 'http://localhost:3000/api/v1/home/counters/1'
+```
+
+### Retorna todos os Pokémon que dão counter no Pokémon do ID especificado, incluindo os lendários
+```bash
+curl --location 'http://localhost:3000/api/v1/home/counters/2&legendary=true'
+```
+
+## Exemplos de Retorno dos Endpoints
+
+### Retorna toda a Pokédex
+```json
+[
+    {
+        "id": 1,
+        "name": "Bulbasaur",
+        "type_a_id": 5,
+        "type_b_id": 8,
+        "created_at": "2025-04-06T20:03:06.478Z",
+        "updated_at": "2025-04-06T20:03:06.478Z",
+        "hp": 45,
+        "attack": 49,
+        "defense": 49,
+        "special_attack": 65,
+        "special_defense": 65,
+        "speed": 45,
+        "form": " ",
+        "total": 318,
+        "generation": 1,
+        "learned_moves": []
+    },
+    {
+        "id": 2,
+        "name": "Ivysaur",
+        "type_a_id": 5,
+        "type_b_id": 8,
+        "created_at": "2025-04-06T20:03:06.483Z",
+        "updated_at": "2025-04-06T20:03:06.483Z",
+        "hp": 60,
+        "attack": 62,
+        "defense": 63,
+        "special_attack": 80,
+        "special_defense": 80,
+        "speed": 60,
+        "form": " ",
+        "total": 405,
+        "generation": 1,
+        "learned_moves": []
+    }
+    ...
+]
+```
+
+### Retorna todos os Pokémon que dão counter no Pokémon do ID especificado
+```json
+[
+    {
+        "id": 716,
+        "name": "Rayquaza",
+        "type_a_id": 15,
+        "type_b_id": 10,
+        "created_at": "2025-04-06T20:03:09.706Z",
+        "updated_at": "2025-04-06T20:03:09.706Z",
+        "hp": 105,
+        "attack": 180,
+        "defense": 100,
+        "special_attack": 180,
+        "special_defense": 100,
+        "speed": 115,
+        "form": "Mega Rayquaza",
+        "total": 780,
+        "generation": 6,
+        "learned_moves": []
+    },
+    {
+        "id": 687,
+        "name": "Mewtwo",
+        "type_a_id": 11,
+        "type_b_id": 7,
+        "created_at": "2025-04-06T20:03:09.572Z",
+        "updated_at": "2025-04-06T20:03:09.572Z",
+        "hp": 106,
+        "attack": 190,
+        "defense": 100,
+        "special_attack": 154,
+        "special_defense": 100,
+        "speed": 130,
+        "form": "Mega Mewtwo X",
+        "total": 780,
+        "generation": 6,
+        "learned_moves": []
+    }
+    ...
+]
+```
 
 ## Contribuição
 
