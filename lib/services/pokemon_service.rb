@@ -6,7 +6,11 @@ module Services
     def find_counter(id)
       pokemon = Repositories::PokemonRepository.new.find_by_id(id)
       pokemon_role = identify_role(pokemon.id)
-      types = type_counters(pokemon.type_a.name, pokemon.type_b.name)
+
+      # Verifica se o Pokémon tem tipo secundário
+      type_b_name = pokemon.type_b&.name
+      types = type_counters(pokemon.type_a.name, type_b_name)
+
       counters = role_selector(pokemon_role, types)
       counters.reject! { |counter| counter[:total] < pokemon.total }
     end
@@ -32,8 +36,10 @@ module Services
     end
 
     def type_counters(type_a, type_b)
+      types_to_check = type_b.nil? ? [type_a] : [type_a, type_b]
+
       Type.select do |type|
-        (type.double_damage_to + type.half_damage_to + type.no_damage_to & [type_a, type_b]).any?
+        (type.double_damage_to + type.half_damage_to + type.no_damage_to & types_to_check).any?
       end
     end
 
