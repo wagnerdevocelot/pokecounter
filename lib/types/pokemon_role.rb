@@ -19,27 +19,28 @@ module Types
 
     # Mapeamento de roles para os atributos de ordenação prioritários
     SORT_ATTRIBUTES = {
-      PHYSICAL_SWEEPER => [:defense, :hp, :special_defense],
-      SPECIAL_SWEEPER => [:special_defense, :hp, :defense],
-      PHYSICAL_TANK => [:attack, :speed, :hp],
-      SPECIAL_TANK => [:special_attack, :speed, :hp],
-      GENERAL => [:attack, :special_attack, :speed]
+      PHYSICAL_SWEEPER => %i[defense hp special_defense],
+      SPECIAL_SWEEPER => %i[special_defense hp defense],
+      PHYSICAL_TANK => %i[attack speed hp],
+      SPECIAL_TANK => %i[special_attack speed hp],
+      GENERAL => %i[attack special_attack speed]
     }.freeze
 
     def self.identify(pokemon)
       # Define um threshold para determinar se as estatísticas são balanceadas
       threshold = 10
-      
+
       # Calcula a média das estatísticas principais
-      stats = [pokemon.hp, pokemon.attack, pokemon.special_attack, pokemon.defense, pokemon.special_defense, pokemon.speed]
+      stats = [pokemon.hp, pokemon.attack, pokemon.special_attack, pokemon.defense, pokemon.special_defense,
+               pokemon.speed]
       avg_stats = stats.sum.to_f / stats.size
-      
+
       # Verifica se as estatísticas estão dentro do threshold da média (estatísticas balanceadas)
       balanced = stats.all? { |stat| (stat - avg_stats).abs <= threshold }
-      
+
       # Se as estatísticas forem balanceadas, retorna GENERAL
       return GENERAL if balanced
-      
+
       # Caso contrário, identifica a role baseada nas duas maiores estatísticas
       top_two = stats.max(2)
 
