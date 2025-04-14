@@ -1,21 +1,34 @@
 # frozen_string_literal: true
 
+require_relative '../types/pokemon_role' # Adds the dependency
+
 module Services
-  # PokemonService faz a requisicao de dados do servico Pokemon
+  # PokemonService encapsulates Pokemon-related logic
   class PokemonService
+    def initialize(repository: Repositories::PokemonRepository.new)
+      @repository = repository
+    end
+
     def self.get_all
-      Repositories::PokemonRepository.new.get_all
+      new.get_all
+    end
+
+    def get_all
+      @repository.get_all
     end
 
     def find_counter(id)
-      pokemon = Repositories::PokemonRepository.new.find_by_id(id)
-      pokemon_role = identify_role(pokemon.id)
+      pokemon = @repository.find_by_id(id)
+      # Uses the new module to identify the role
+      pokemon_role = Types::PokemonRole.identify(pokemon)
 
-      # Verifica se o Pokémon tem tipo secundário
       type_b_name = pokemon.type_b&.name
       types = type_counters(pokemon.type_a.name, type_b_name)
 
-      counters = role_selector(pokemon_role, types)
+      # Uses the new module to get the sorting attributes
+      sort_attributes = Types::PokemonRole::SORT_ATTRIBUTES[pokemon_role]
+      counters = counter_sort(*types, *sort_attributes)
+
       counters.reject! { |counter| counter[:total] < pokemon.total }
     end
 
@@ -27,44 +40,25 @@ module Services
     def find_team_counters(team_names)
       raise 'Um time completo precisa ter 6 Pokémon' if team_names.length != 6
 
-      team = []
-      team_names.each do |name|
-        pokemon = Repositories::PokemonRepository.new.find_by_name(name)
+      team = team_names.map do |name|
+        pokemon = @repository.find_by_name(name)
         raise "Pokémon não encontrado: #{name}" if pokemon.nil?
-        team << pokemon
+
+        pokemon
       end
 
-      # Simplificando a lógica para garantir que sempre retornamos 6 Pokémon
-      # Pegar os primeiros 20 Pokémon com maior total que não estão no time original
       all_counters = Pokemon.where.not(id: team.map(&:id))
                             .order(total: :desc)
                             .limit(20)
                             .to_a
-      
-      # Se não encontramos counters suficientes, incluir qualquer Pokémon que não está no time
+
       if all_counters.length < 6
         additional_counters = Pokemon.where.not(id: team.map(&:id) + all_counters.map(&:id))
-                                    .limit(6 - all_counters.length)
+                                     .limit(6 - all_counters.length)
         all_counters.concat(additional_counters)
       end
-      
-      # Garantir que retornamos exatamente 6 Pokémon (ou todos disponíveis se forem menos de 6)
-      all_counters.take(6)
-    end
 
-    def role_selector(pokemon_role, types)
-      case pokemon_role
-      when 'Physical Sweeper'
-        counter_sort(*types, :defense, :hp, :special_defense)
-      when 'Special Sweeper'
-        counter_sort(*types, :special_defense, :hp, :defense)
-      when 'Physical Tank'
-        counter_sort(*types, :attack, :speed, :hp)
-      when 'Special Tank'
-        counter_sort(*types, :special_attack, :speed, :hp)
-      else
-        counter_sort(*types, :attack, :special_attack, :speed)
-      end
+      all_counters.take(6)
     end
 
     def type_counters(type_a, type_b)
@@ -75,31 +69,20 @@ module Services
       end
     end
 
-    def identify_role(id)
-      pokemon = Repositories::PokemonRepository.new.find_by_id(id)
-      stats = [pokemon.hp, pokemon.attack, pokemon.special_attack, pokemon.defense, pokemon.special_defense,
-               pokemon.speed].max(2)
-
-      if stats.include?(pokemon.attack) && stats.include?(pokemon.speed)
-        'Physical Sweeper'
-      elsif stats.include?(pokemon.special_attack) && stats.include?(pokemon.speed)
-        'Special Sweeper'
-      elsif stats.include?(pokemon.attack) && stats.include?(pokemon.defense)
-        'Physical Tank'
-      elsif stats.include?(pokemon.special_attack) && stats.include?(pokemon.defense)
-        'Special Tank'
-      else
-        'General'
-      end
-    end
-
     def counter_sort(*types, sort_a, sort_b, sort_c)
       counters = []
       types.each do |type|
-        counters << type.pokemon_a.order(sort_a, sort_b, sort_c)
-        counters << type.pokemon_b.order(sort_a, sort_b, sort_c) unless type.pokemon_b.nil?
+        # Ensures that the query is done correctly
+        # Assuming that type.pokemon_a and type.pokemon_b return Active Record Relations
+        counters << type.pokemon_a.order(sort_a => :desc, sort_b => :desc, sort_c => :desc)
+        # Checks if pokemon_b exists before trying to access it
+        counters << Array.wrap(type.pokemon_b&.order(sort_a => :desc, sort_b => :desc, sort_c => :desc))
       end
-      counters.flatten!
+      # Uses flat_map to simplify and ensures they are arrays before concatenating
+      counters = counters.flat_map(&:to_a)
+      # Removes duplicates based on Pokemon ID
+      counters.uniq!(&:id)
+      # Sorts by total in descending order as before
       counters.sort_by(&:total).reverse
     end
   end
